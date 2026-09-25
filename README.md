@@ -7,3 +7,5 @@ Pubblicata su Cloudflare Pages: https://yardeni-intel.pages.dev
 - `docs/GUIDA_SETUP_v3.md`: guida di installazione passo passo
 - `index.html`, `articoli/`, `articoli.json`: generati dallo script, **da non modificare a mano**
 - `apps-script/vecchi/`: script precedenti (v2.5 e publisher), tenuti come riferimento
+- `docs/HANDOFF_v3_setup_e_RID.md`: pacchetto per la chat di setup (Cloudflare, trigger, integrazione in RID)
+- `docs/lessons_tool.md`: scoperte operative sui tool

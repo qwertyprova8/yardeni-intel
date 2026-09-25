@@ -17,23 +17,19 @@ I grafici non vengono scaricati: la pagina li mostra direttamente dai server di 
 
 ---
 
-## Passo 0 — Verifica che i grafici siano visibili senza login (30 secondi)
+## Passo 0 — Grafici visibili senza login ✅ FATTO
 
-Apri una **finestra in incognito** (Chrome: Ctrl+Maiusc+N) e incolla:
-
-```
-https://storage.ghost.io/c/16/ef/16efc0dd-240f-4f5e-9e01-d619d6fd4fd1/content/images/2026/09/gateway-240.png
-```
-
-- Vedi un grafico → procedi.
-- Vedi un errore → fermati e dimmelo (in quel caso bisogna copiare le immagini nel repo).
+Verificato il 25/09/2026: il link a `storage.ghost.io` si apre in incognito. Le pagine
+possono quindi mostrare i grafici direttamente dai server di Yardeni.
 
 ## Passo 1 — Crea il token GitHub (sostituisce quello vecchio)
 
 1. Vai su <https://github.com/settings/personal-access-tokens/new>
 2. **Token name**: `yardeni-apps-script`
-3. **Expiration**: scegli la durata più lunga disponibile e **segnati in calendario la
-   scadenza**: quel giorno il sito smette di aggiornarsi.
+3. **Expiration**: **No expiration**. Verificato con Perplexity a settembre 2026: per gli
+   account personali è consentito. GitHub revoca da solo i token inutilizzati per 1 anno,
+   ma questo lo usa ogni ora. Se l'opzione non compare, scegli 366 giorni e **segnati in
+   calendario la scadenza**: quel giorno il sito smette di aggiornarsi.
 4. **Repository access** → *Only select repositories* → scegli `yardeni-intel`
 5. **Permissions** → *Repository permissions* → **Contents** → *Read and write*
 6. In fondo clicca **Generate token** e copia il valore (inizia con `github_pat_`).
@@ -96,29 +92,9 @@ Apri su <https://script.google.com> i progetti vecchi → ⏰ **Trigger** → ic
 
 ---
 
-## Integrazione in rid.siegelbot.uk (sezione #rotazione)
+## Integrazione in rid.siegelbot.uk
 
-Metodo più semplice: incolla dentro la sezione `#rotazione` del tuo sito
-
-```html
-<iframe src="https://yardeni-intel.pages.dev/" loading="lazy"
-        style="width:100%;height:85vh;border:0;border-radius:6px;"></iframe>
-```
-
-Metodo alternativo (elenco degli ultimi 10 articoli con link, integrato nella grafica del sito):
-
-```html
-<ul id="yardeni-lista"></ul>
-<script>
-fetch("https://yardeni-intel.pages.dev/articoli.json").then(r => r.json()).then(lista => {
-  document.getElementById("yardeni-lista").innerHTML = lista.slice(0, 10).map(a =>
-    `<li>${a.data} — <a href="https://yardeni-intel.pages.dev/articoli/${a.slug}.html" target="_blank">${a.titolo}</a></li>`
-  ).join("");
-});
-</script>
-```
-
-Il file `_headers` nel repo autorizza `rid.siegelbot.uk` a leggere `articoli.json`.
+Vedi `docs/HANDOFF_v3_setup_e_RID.md`, sezione 4: nuova scheda "Fonti" in RID (`mire299.py`).
 
 ## Se qualcosa non va
 
