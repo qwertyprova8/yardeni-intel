@@ -1,0 +1,107 @@
+TRADING INTELLIGENCE AUTOMATION — Stato Progetto
+
+Aggiornato: 25 giugno 2026 Prossima chat: allega questo file + DECISIONI_E_ARCHITETTURA.md + MASTER_CONTEXT_v1_1.md + yardeni_publisher(5).gs
+
+IL PROGETTO IN UNA RIGA
+
+Sistema automatico che aggrega analisi finanziarie da 8 guru a pagamento, le processa con AI e consegna ogni mattina un recap Telegram da 2-3 minuti ragionato come un hedge fund macro. Costo target: €10/mese fisso (Hetzner), tutto il resto ZERO.
+
+COSA È COMPLETATO ✅
+Infrastruttura e architettura
+Stack tecnico definito: Hetzner CAX21 + Docker + n8n + SQLite + Cloudflare Tunnel + Telegram
+8 fonti mappate con metodo di ingestion per ognuna
+Principio bookmarklet > estensione Chrome — definitivo
+Cascata modelli a costo zero: free OpenRouter → Gemini Flash → Qwen guardrail
+Prompt validati
+Prompt batch (pillola + dettaglio per autore) — ✅ TESTATO su dati reali 24/03/2026
+Prompt Newton Sezioni 1+2+3 — testato su 16 report reali
+Prompt Ciovacco (YouTube) — testato su video reale
+Prompt CIO AI Studio (analisi profonda 5 guru) — pronto in PROMPT_DI_INNESCO
+Analisi Mark Newton
+16 report analizzati (dic 2025, feb-apr 2026)
+Scorecard reale: accuratezza netta 76.4% su 20 previsioni verificate
+Pattern: Newton preciso sui target ribassisti, ottimista sui rally in debolezza strutturale
+Filtro JC Parets
+Regola validata su campione reale (filtra per autore nel corpo + ticker presenti)
+PILASTRO YARDENI — COMPLETATO (giugno 2026) ✅
+
+Flusso end-to-end operativo e testato:
+
+Email Yardeni → script GAS v2.5 (account avvocato) → TXT su Drive ↓ trigger martedì e giovedì ore 23:00 Script GAS "YARDENI WEEKLY PUBLISHER" (account avvocato) ↓ Legge TXT da Drive (cartella ID: 1rN2KOpXmJWLwP2s-P6EZYgzJRUYg1tSF) Classifica per tipo (US Market Call / Global Call / QuickTake / Week Ahead / Roundup / Settoriale) Genera HTML dashboard con noindex ↓ GitHub API (repo: qwertyprova8/yardeni-intel) ↓ Cloudflare Pages auto-deploy → https://yardeni-intel.pages.dev (pubblico, noindex, leggibile da AI via web_fetch ✅ confermato)
+
+Morning Briefing macro: archive.yardeni.com/morning-briefing-2026/ (già pubblico, accesso diretto)
+
+File script: yardeni_publisher(5).gs — in memoria progetto
+
+BUG RILEVATI E RISOLTI IN QUESTA SESSIONE
+Bug 1 — Cloudflare Pages Direct Upload non funziona da Apps Script
+
+Problema: API Pages Direct Upload richiede formato multipart con manifest+hash MD5 non documentato ufficialmente e non costruibile da Apps Script. Tentativi: 3 approcci diversi (boundary manuale, blob nativo, upload-config) — tutti falliti. Soluzione adottata: Apps Script → GitHub API (PUT base64, semplicissimo) → Cloudflare Pages rileva commit → deploy automatico. Zero manifest, zero multipart.
+
+Bug 2 — Il sito si fermava alla data del 20 giugno pur avendo file più recenti
+
+Problema: lo script usava f.getDateCreated() (data di creazione su Drive = data di sincronizzazione dal PC, non data dell'email). I file del 21-24 giugno erano stati sincronizzati in ritardo e risultavano "fuori finestra". Soluzione: lo script ora legge la data direttamente dal nome del file (formato YYYY-MM-DD - Titolo.txt) — robusta e indipendente dalla metadata Drive. Stato: fix applicato nello script v5, da testare al prossimo lancio manuale.
+
+Bug 3 — Token GitHub condiviso in chat (sicurezza)
+
+Problema: Andrea ha incollato in chat il token GitHub in chiaro. Azione: token revocato immediatamente, nuovo token creato e inserito solo nello script. Regola operativa: i token non si condividono mai in chat, solo nello script direttamente.
+
+ARCHITETTURA INTELLIGENCE HUB (nuova — decisa in questa sessione)
+
+Visione: un sito dove confluiscono tutte le fonti, che funziona sia come dashboard personale sia come pagina leggibile dalle AI in chat (via web_fetch) per produrre report SENZA consumare API.
+
+Struttura:
+
+Sito: Cloudflare Pages (gratuito)
+Protezione: noindex + URL non parlante (non Basic Auth — blocca le AI)
+Prima pagina live: https://yardeni-intel.pages.dev ✅
+Prossime pagine: una per ogni fonte, stesso pattern
+
+Flusso di utilizzo:
+
+Andrea incolla l'URL in chat → AI legge via web_fetch → analisi combinata
+Bottoni sul sito generano prompt pre-compilati da incollare in chat (costo ZERO API)
+Solo dopo validazione: AI integrata via API con cascata modelli free
+ROADMAP FONTI — STATO AGGIORNATO
+#	Fonte	Tipo	Stato	Note
+1	Larry Williams	Statica annuale	✅ FATTO	PDF → contesto_mercati.md
+2	Seth Golden Telegram	Dinamica giornaliera	✅ OPERATIVO	Telethon → SQLite → Streamlit
+3	Yardeni	Email + web pubblico	✅ COMPLETATO	Script GAS → GitHub → CF Pages
+4	JC Parets	Email dinamica	🔧 PROSSIMA	Stesso pattern Yardeni + filtro commerciale
+5	Ciovacco	Video YouTube	🔧 DA FARE	yt-dlp → trascrizione → sito
+6	Seth Finom report	PDF 50pag testo+grafici	🔧 DA FARE	Bookmarklet → chunking → Gemini vision
+7	Mark Newton (FSI)	Login portale, PDF+video	⚠️ COMPLESSO	Login + PDF ok; video Tom Lee nodo aperto
+8	Sam Ro (TKer)	Saltuaria	🔴 FASE 2	Bassa priorità
+COSA NON È ANCORA INIZIATO ⏳
+Task	Priorità	Note
+JC Parets — filtro commerciale + script GAS	Alta	Chat dedicata, stesso pattern Yardeni
+Ciovacco — yt-dlp + trascrizione	Media	Validare se basta audio o servono grafici
+Seth Finom — bookmarklet + chunking	Media	Già architettura discussa
+Mark Newton FSI — automazione login	Bassa	Il più complesso, per ultimo
+Knowledge map Yardeni (AI Studio)	Media	Da fare su tutte le email storiche
+Deploy Hetzner + n8n	Ultima fase	Dopo validazione tutte le fonti
+Sam Ro	Fase 2	—
+PROSSIMA SESSIONE CONSIGLIATA
+
+Opzione A (più valore immediato): JC Parets — chat dedicata. Analizzare 5-6 email reali per trovare pattern filtro commerciale/operativo. Stesso script GAS di Yardeni, adattato.
+
+Opzione B: Testare il fix Bug 2 (data da nome file) lanciando manualmente pubblicaYardeni e verificando che i file del 21-24 giugno appaiano nel sito.
+
+VINCOLI NON NEGOZIABILI (invariati)
+Costo fisso massimo: €10/mese (Hetzner CAX21)
+Gemini API: free tier — si ferma, non addebita
+Cascata modelli: free OpenRouter → Gemini Flash → Qwen guardrail
+Semplicità prima di tutto: meno codice = meno manutenzione
+Una fonte alla volta, chat dedicata per fonte
+Raw originali non si cancellano mai
+Token e credenziali: MAI in chat, solo negli script
+FILE CHIAVE DEL PROGETTO
+File	Dove	Scopo
+yardeni_publisher(5).gs	Memoria progetto	Script GAS Yardeni — VERSIONE CORRENTE
+STATO_PROGETTO_v1_1.md	Questo file	Stato aggiornato giugno 2026
+DECISIONI_E_ARCHITETTURA.md	Progetto	Decisioni architetturali con motivazioni
+MASTER_CONTEXT_v1_1.md	Progetto	Contesto completo progetto TIA
+contesto_mercati_index.md	Progetto	Ticker Index Larry Williams 2026
+HANDOFF_yardeni_e_roadmap.md	Output	Handoff per chat dedicata Yardeni + roadmap
+docker-compose.yml	Progetto	Stack server Hetzner
+trading_room.py	Progetto	Cascata modelli validata (riferimento)
